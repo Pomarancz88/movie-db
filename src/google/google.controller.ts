@@ -15,6 +15,5 @@ export class GoogleController {
   @Render('setBearer')
   async googleAuthRedirect(@Req() req) {
     return {bearer: await this.authService.googleLogin(req)}
-    return this.authService.googleLogin(req)
   }
 }

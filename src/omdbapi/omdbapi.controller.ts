@@ -17,11 +17,9 @@ export class OmdbapiController {
   @Get('findTitle/:title/:page')
   @UseGuards(JwtAuthGuard)
   async findMovie(
-    @Param('title') title: string, 
-    @Param('page', ParseIntPipe) page: number
-    ){
-    const movies = await this.omdbapi.searchByTitle(title, page);
-    return movies;
+  @Param('title') title: string, 
+  @Param('page', ParseIntPipe) page: number ){
+    return await this.omdbapi.searchByTitle(title, page);
   }
 
   @Post('favorite')
