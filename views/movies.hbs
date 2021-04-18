@@ -1,0 +1,103 @@
+
+<!doctype html>
+<html lang="en">
+	<head>
+		<meta http-equiv="Content-type" content="text/html; charset=utf-8">
+		<meta name="viewport" content="width=device-width,initial-scale=1">
+
+		<link rel="stylesheet" type="text/css" href="https://cdn.datatables.net/1.10.22/css/jquery.dataTables.css">
+		
+		<script type="text/javascript" charset="utf8" src="https://code.jquery.com/jquery-3.5.1.min.js"></script>
+		<script type="text/javascript" charset="utf8" src="https://cdn.datatables.net/1.10.22/js/jquery.dataTables.js"></script>
+		<style>
+			
+	
+		</style>
+
+		<script>
+
+		const queryString = new URLSearchParams(window.location.search);
+
+		const page = queryString.get('page') || 1;
+		const title = queryString.get('title') || '';
+			
+	
+		$(document).ready( function () {
+			let bearer = window.localStorage.getItem('bearer');
+			if (!bearer) {
+				window.location = '/'
+			}
+
+			// pobranie filmow
+
+			function populateMovies() {
+				fetch(`/movies/findTitle/${title}/${page}`, {
+					method: 'GET',
+					headers: {
+						Authorization: `Bearer bearer`
+					}
+				})
+				.then(movies=>movies.json())
+				.then(movies=>{
+					console.log(movies)
+
+					window.table = $('#example').DataTable({
+						dom: 'Bfrtp',
+						responsive: true,
+						columns: [
+							{"data": 'Title'},
+							{"data": 'Year'},
+							{"data": 'imdbID'},
+							{"data": 'Type'},
+							{"data": 'Poster'},
+						],
+						data: movies.Search
+					});
+
+					table.page
+				}
+				)
+				.catch(err=>console.log(err))
+			}
+
+			function markFav(movieId) {
+				fetch(`/movies/favorite/${title}/${page}`, {
+					method: 'GET',
+					headers: {
+						Authorization: `Bearer bearer`
+					}
+				})
+			}
+
+			populateMovies()
+
+
+			$('#example')
+
+
+		} );
+		</script>
+	</head>
+	<body>
+        },
+
+		<table id="example">
+			<thead>
+				<th>imdbID</th>
+				<th>Title</th>
+				<th>Year</th>
+				<th>Type</th>
+				<th>Poster</th>
+			</thead>
+			<tbody>
+				<tr>
+					<td>2</td>
+					<td>null</td>
+					<td>22 zł</td>
+					<td>success</td>
+					<td>success</td>
+				</tr>
+			</tbody>
+		</table>
+	</body>
+</html>

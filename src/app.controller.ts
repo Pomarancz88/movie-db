@@ -1,4 +1,4 @@
-import { Controller, Get, Post, Request, UseGuards } from '@nestjs/common';
+import { Controller, Get, Post, Render, Request, UseGuards } from '@nestjs/common';
 import { AppService } from './app.service';
 import { AuthService } from './auth/auth.service';
 import { JwtAuthGuard } from './auth/jwt-auth.guards';
@@ -12,9 +12,9 @@ export class AppController {
 
   @UseGuards(LocalAuthGuard)
   @Post('auth/login')
+  @Render('setBearer')
   async login(@Request() req) {
-    return this.authService.login(req.user);
-    // return req.user;
+    return {bearer: await this.authService.login(req.user)}
   }
 
   @UseGuards(JwtAuthGuard)
@@ -24,7 +24,14 @@ export class AppController {
   }
 
   @Get()
-  getHello(): string {
-    return this.appService.getHello();
+  @Render('selectLogin')
+  selectLogin() {
+    return {};
+  }
+
+  @Get('movies')
+  @Render('movies')
+  moviesList() {
+    return {};
   }
 }

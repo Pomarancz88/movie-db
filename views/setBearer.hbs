@@ -1,0 +1,23 @@
+
+<!doctype html>
+<html lang="en">
+	<head>
+		<meta http-equiv="Content-type" content="text/html; charset=utf-8">
+		<meta name="viewport" content="width=device-width,initial-scale=1">
+		<style>
+			
+	
+		</style>
+
+	</head>
+	<body>
+		token = {{ bearer}}
+		<script>
+			
+	
+			let bearer = window.localStorage.setItem('bearer', '{{ bearer}}' );
+				window.location = '/movies'
+
+		</script>
+	</body>
+</html>

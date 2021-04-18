@@ -1,5 +1,6 @@
 import { Injectable } from '@nestjs/common';
 import { JwtService } from '@nestjs/jwt';
+import { User } from 'src/users/user.entity';
 import { UsersService } from 'src/users/users.service';
 
 @Injectable()
@@ -9,9 +10,9 @@ export class AuthService {
     private jwtService: JwtService
   ) {}
 
-  async validateUser(username: string, pass: string): Promise<any> {
+  async validateUser(email: string, pass: string): Promise<any> {
     // TODO: add hash function
-    const user = await this.UsersService.findOne(username);
+    const user = await this.UsersService.findOne(email);
     if (user && user.password === pass) {
       const { password, ...result } = user;
       return result;
@@ -20,24 +21,43 @@ export class AuthService {
   }
 
   async login(user: any) {
-    const payload = { username: user.username, sub: user.userId };
-    return {
-      access_token: this.jwtService.sign(payload),
-    };
+    const payload = { email: user.email, sub: user.id };
+    return this.jwtService.sign(payload);
   }
 
-  async googleLogin(req) {
+  async googleLogin(req): Promise<string> {
     if (!req.user) {
       return 'no user'
     }
 
-    return {
-      access_token: this.jwtService.sign(req.user),
-    };
+    let user = await this.UsersService.findOne(req.user.email);
 
-    return {
-      message: 'user logged by google',
-      user: req.user
+    if (!user) {
+      user = await this.UsersService.create(
+        `${req.user.firstName} ${req.user.lastName}`,
+        req.user.email,
+        'googleLogin'
+      )
     }
+
+    return this.jwtService.sign(req.user);
+  }
+
+  async facebookLogin(req) {
+    if (!req.user) {
+      return 'no user'
+    }
+
+    let user = await this.UsersService.findOne(req.user.email);
+
+    if (!user) {
+      user = await this.UsersService.create(
+        `${req.user.firstName} ${req.user.lastName}`,
+        req.user.email,
+        'facebookLogin'
+      )
+    }
+
+    return this.jwtService.sign(req.user);
   }
 }

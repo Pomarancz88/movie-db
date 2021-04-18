@@ -1,0 +1,36 @@
+
+<!doctype html>
+<html lang="en">
+	<head>
+		<meta http-equiv="Content-type" content="text/html; charset=utf-8">
+		<meta name="viewport" content="width=device-width,initial-scale=1">
+		<style>
+			
+	
+		</style>
+
+	</head>
+	<body>
+
+		<form action="/auth/login" method="post">
+
+			<div class="container">
+				<label for="username"><b>Email</b></label>
+				<input type="text" placeholder="Enter Email" name="username" required>
+
+				<label for="password"><b>Password</b></label>
+				<input type="password" placeholder="Enter Password" name="password" required>
+
+				<button type="submit">Login</button>
+			</div>
+
+		</form>
+
+			<div> 
+				<button onclick="window.location = '/google'">login with google</button>
+			</div>
+			<div> 
+				<button onclick="window.location = '/facebook'">login with facebook</button>
+			</div>
+	</body>
+</html>
