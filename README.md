@@ -3,8 +3,7 @@
 -----------
 
 Using Docker Compose:
-Run `docker-compose up` and Compose will start and run your entire
-   app.
+Run `docker-compose up` and Compose will start and run your entire app on port `3000`.
 
 ## Installation
 
