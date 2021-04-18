@@ -19,16 +19,4 @@ async function bootstrap() {
   await app.listen(3000);
 }
 
-// async function bootstrap() {
-//   const app = await NestFactory.create(AppModule);
-//   app.useGlobalPipes(new ValidationPipe({
-//     transform: true,
-//     skipMissingProperties:false
-//   }));
-
-//   app.useS
-
-//   await app.listen(3000);
-// }
-
 bootstrap();

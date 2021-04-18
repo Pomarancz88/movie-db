@@ -17,13 +17,15 @@ import { FacebookController } from './facebook/facebook.controller';
     OmdbapiModule,
     TypeOrmModule.forRoot({
       type: 'mysql',
-      host: 'localhost',
-      port: 3306,
-      username: 'root',
-      password: 'root',
-      database: 'test1',
+      host: process.env.DATABASE_HOST || 'mysqldb',
+      port: +(process.env.DATABASE_PORT || 3306),
+      username: process.env.DATABASE_USER || 'root',
+      password: process.env.DATABASE_PASSWORD || 'root',
+      database: process.env.DATABASE_NAME || 'nazwabazy',
       entities: [User],
       synchronize: true,
+      retryAttempts: 100,
+      retryDelay: 5000
     })
   ],
   controllers: [AppController, GoogleController, FacebookController],

@@ -1,4 +1,3 @@
-
 <!doctype html>
 <html lang="en">
 	<head>
@@ -34,7 +33,7 @@
 				fetch(`/movies/findTitle/${title}/${page}`, {
 					method: 'GET',
 					headers: {
-						Authorization: `Bearer bearer`
+						Authorization: `Bearer ${bearer}`
 					}
 				})
 				.then(movies=>movies.json())
@@ -64,38 +63,33 @@
 				fetch(`/movies/favorite/${title}/${page}`, {
 					method: 'GET',
 					headers: {
-						Authorization: `Bearer bearer`
+						Authorization: `Bearer ${bearer}`
 					}
 				})
 			}
 
 			populateMovies()
 
-
-			$('#example')
-
-
 		} );
 		</script>
 	</head>
 	<body>
-        },
 
 		<table id="example">
 			<thead>
-				<th>imdbID</th>
-				<th>Title</th>
-				<th>Year</th>
-				<th>Type</th>
-				<th>Poster</th>
+				<th></th>
+				<th></th>
+				<th></th>
+				<th></th>
+				<th></th>
 			</thead>
 			<tbody>
 				<tr>
-					<td>2</td>
-					<td>null</td>
-					<td>22 zł</td>
-					<td>success</td>
-					<td>success</td>
+					<td></td>
+					<td></td>
+					<td></td>
+					<td></td>
+					<td></td>
 				</tr>
 			</tbody>
 		</table>
