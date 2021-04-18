@@ -1,36 +1,280 @@
-
-<!doctype html>
+<!DOCTYPE html>
 <html lang="en">
-	<head>
-		<meta http-equiv="Content-type" content="text/html; charset=utf-8">
-		<meta name="viewport" content="width=device-width,initial-scale=1">
-		<style>
-			
-	
-		</style>
+  <head>
+    <meta http-equiv="Content-type" content="text/html; charset=utf-8" />
+    <meta name="viewport" content="width=device-width,initial-scale=1" />
+    <style>
+      *,
+      *:before,
+      *:after {
+        box-sizing: border-box;
+      }
 
-	</head>
-	<body>
+      body {
+        margin: 0;
+        padding: 0;
+      }
 
-		<form action="/auth/login" method="post">
+      .logmod {
+        background: #ccc;
+        display: flex;
+        min-height: 100vh;
+      }
+      .logmod__wrapper {
+        display: block;
+        background: #fff;
+        position: relative;
+        max-width: 550px;
+        border-radius: 4px;
+        box-shadow: 0 0 18px rgba(0, 0, 0, 0.2);
+        margin: auto;
+      }
+      .logmod__heading {
+        text-align: center;
+        padding: 12px 0 12px 0;
+      }
+      .logmod__heading-subtitle {
+        display: block;
+        font-weight: 400;
+        font-size: 15px;
+        color: #888;
+        line-height: 48px;
+      }
+      .logmod__form {
+        border-top: 1px solid #e5e5e5;
+      }
+      .logmod__alter {
+        display: block;
+        position: relative;
+        margin-top: 7px;
+      }
+      .logmod__alter .connect:last-child {
+        border-radius: 0 0 4px 4px;
+      }
 
-			<div class="container">
-				<label for="username"><b>Email</b></label>
-				<input type="text" placeholder="Enter Email" name="username" required>
+      .connect {
+        overflow: hidden;
+        position: relative;
+        display: block;
+        width: 100%;
+        height: 72px;
+        line-height: 72px;
+        text-decoration: none;
+        text-align: center;
+      }
 
-				<label for="password"><b>Password</b></label>
-				<input type="password" placeholder="Enter Password" name="password" required>
+      .connect:focus,
+      .connect:hover,
+      .connect:visited {
+        color: #fff;
+        text-decoration: none;
+      }
 
-				<button type="submit">Login</button>
-			</div>
+      .connect.facebook {
+        background: #3b5998;
+        color: #fff;
+      }
+      .connect.facebook a {
+        color: #fff;
+      }
+      .connect.googleplus {
+        background: #dd4b39;
+        color: #fff;
+      }
+      .connect.googleplus a {
+        color: #fff;
+      }
 
-		</form>
+      .simform {
+        position: relative;
+      }
+      .simform__actions {
+        padding: 15px;
+        font-size: 14px;
+      }
+      .simform__actions .submit {
+        height: 48px;
+        color: #fff;
+        width: 100%;
+        font-weight: 700;
+        font-size: 16px;
+        background: #4caf50;
+        margin: 7px auto 30px;
+      }
 
-			<div> 
-				<button onclick="window.location = '/google'">login with google</button>
-			</div>
-			<div> 
-				<button onclick="window.location = '/facebook'">login with facebook</button>
-			</div>
-	</body>
+      .sminputs {
+        border-bottom: 1px solid #e5e5e5;
+      }
+      .sminputs::after {
+        clear: both;
+        content: '';
+        display: table;
+      }
+      .sminputs .input {
+        display: block;
+        position: relative;
+        width: 50%;
+        height: 71px;
+        padding: 11px 24px;
+        border-right: 1px solid #e5e5e5;
+        border-bottom: none;
+        float: left;
+        background-color: #fff;
+        border-radius: 0;
+        box-sizing: border-box;
+        -webkit-appearance: none;
+        -moz-appearance: none;
+        appearance: none;
+      }
+      .sminputs .input.active {
+        background: #eee;
+      }
+      .sminputs .input.active .hide-password {
+        background: #eee;
+      }
+      .sminputs .input.full {
+        width: 100%;
+      }
+      .sminputs .input label {
+        overflow: hidden;
+        text-overflow: ellipsis;
+        white-space: nowrap;
+        display: block;
+        width: 100%;
+        text-transform: uppercase;
+        letter-spacing: 1px;
+        font-weight: 700;
+        font-size: 12px;
+        cursor: pointer;
+        line-height: 24px;
+      }
+      .sminputs .input input {
+        postion: relative;
+        display: inline-block;
+        height: 24px;
+        font-size: 15px;
+        line-height: 19.2px;
+        color: #555;
+        border-radius: 4px;
+        vertical-align: middle;
+        box-shadow: none;
+        box-sizing: border-box;
+        width: 100%;
+        height: auto;
+        border: none;
+        padding: 0;
+        cursor: pointer;
+        background-color: transparent;
+        color: rgba(75, 89, 102, 0.85);
+      }
+      .sminputs .hide-password {
+        display: inline-block;
+        position: absolute;
+        right: 0;
+        top: 0;
+        padding: 0 15px;
+        border-left: 1px solid #e4e4e4;
+        font-size: 14px;
+        background: #fff;
+        overflow: hidden;
+        color: #444;
+        cursor: pointer;
+        margin-top: 12px;
+        line-height: 48px;
+      }
+
+      html {
+        font-size: 16px;
+        line-height: 24px;
+        font-family: 'Lato', sans-serif;
+      }
+
+      .btn,
+      .simform__actions .submit {
+        display: inline-block;
+        line-height: normal;
+        white-space: nowrap;
+        vertical-align: middle;
+        text-align: center;
+        cursor: pointer;
+        box-sizing: border-box;
+        border: none;
+        outline: none;
+        outline-offset: 0;
+        font-weight: 400;
+        box-shadow: none;
+        min-width: 90px;
+        padding: 10px 14px;
+      }
+      
+
+    </style>
+  </head>
+  <body>
+    <div class="logmod">
+      <div class="logmod__wrapper">
+        <div class="logmod__heading">
+          <span class="logmod__heading-subtitle"
+            >Enter your email and password <strong>to sign in</strong></span
+          >
+        </div>
+        <div class="logmod__form">
+          <form
+            accept-charset="utf-8"
+            action="/auth/login"
+            method="post"
+            class="simform"
+            autocomplete="off"
+          >
+            <div class="sminputs">
+              <div class="input full">
+                <label class="string optional" for="user-name">Email*</label>
+                <input
+                  class="string optional"
+                  maxlength="255"
+                  id="user-email"
+                  placeholder="Email"
+                  type="email"
+                  size="50"
+                  name="username"
+                />
+              </div>
+            </div>
+            <div class="sminputs">
+              <div class="input full">
+                <label class="string optional" for="user-pw">Password *</label>
+                <input
+                  class="string optional"
+                  maxlength="255"
+                  id="user-pw"
+                  placeholder="Password"
+                  type="password"
+                  size="50"
+                  name="password"
+                />
+              </div>
+            </div>
+            <div class="simform__actions">
+              <input
+                class="submit"
+                name="commit"
+                type="submit"
+                value="Log In"
+              />
+            </div>
+          </form>
+        </div>
+        <div class="logmod__alter">
+          <div class="logmod__alter-container">
+            <a href="/facebook" class="connect facebook">
+              <span>Sign in with <strong>Facebook</strong></span>
+            </a>
+            <a href="/google" class="connect googleplus">
+              <span>Sign in with <strong>Google</strong></span>
+            </a>
+          </div>
+        </div>
+      </div>
+    </div>
+  </body>
 </html>

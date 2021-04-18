@@ -1,97 +1,207 @@
-<!doctype html>
+<!DOCTYPE html>
 <html lang="en">
-	<head>
-		<meta http-equiv="Content-type" content="text/html; charset=utf-8">
-		<meta name="viewport" content="width=device-width,initial-scale=1">
+  <head>
+    <meta charset="utf-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta
+      name="viewport"
+      content="width=device-width, initial-scale=1, shrink-to-fit=no"
+    />
 
-		<link rel="stylesheet" type="text/css" href="https://cdn.datatables.net/1.10.22/css/jquery.dataTables.css">
-		
-		<script type="text/javascript" charset="utf8" src="https://code.jquery.com/jquery-3.5.1.min.js"></script>
-		<script type="text/javascript" charset="utf8" src="https://cdn.datatables.net/1.10.22/js/jquery.dataTables.js"></script>
-		<style>
-			
-	
-		</style>
+    <link
+      rel="stylesheet"
+      type="text/css"
+      href="https://unpkg.com/turretcss/dist/turretcss.min.css"
+      crossorigin="anonymous"
+    />
+    <style>
+      .page-wrapper {
+        padding: 50px;
+      }
+      .button-group {
+        justify-content: center;
+        flex-wrap: wrap;
+      }
+      .hidden {
+        display: none;
+      }
+      .results table img {
+        width: 100px;
+        height: 120px;
+        display: block;
+        object-fit: cover;
+      }
+    </style>
+  </head>
+  <body>
+    <div class="page-wrapper">
+      <form class="input-group">
+        <input
+          class="input-xxl input-title"
+          type="text"
+          placeholder="Enter movie title..."
+          name="title"
+        />
+        <input type="hidden" name="page" value="1" />
+        <button class="button button-xxl" type="submit">Search</button>
+      </form>
 
-		<script>
+      <hr />
 
-		const queryString = new URLSearchParams(window.location.search);
+      <div class="space-xxl spinner"></div>
 
-		const page = queryString.get('page') || 1;
-		const title = queryString.get('title') || '';
-			
-	
-		$(document).ready( function () {
-			let bearer = window.localStorage.getItem('bearer');
-			if (!bearer) {
-				window.location = '/'
-			}
+      <p class="lead no-results hidden">
+        No results, enter title to find some...
+      </p>
 
-			// pobranie filmow
+      <div class="table-responsive results hidden">
+        <table>
+          <thead>
+            <tr>
+              <th scope="col"></th>
+              <th scope="col"></th>
+              <th scope="col">Title</th>
+              <th scope="col">Year</th>
+              <th scope="col">Type</th>
+            </tr>
+          </thead>
+          <tbody></tbody>
+        </table>
+      </div>
 
-			function populateMovies() {
-				fetch(`/movies/findTitle/${title}/${page}`, {
-					method: 'GET',
-					headers: {
-						Authorization: `Bearer ${bearer}`
-					}
-				})
-				.then(movies=>movies.json())
-				.then(movies=>{
-					console.log(movies)
+      <hr />
 
-					window.table = $('#example').DataTable({
-						dom: 'Bfrtp',
-						responsive: true,
-						columns: [
-							{"data": 'Title'},
-							{"data": 'Year'},
-							{"data": 'imdbID'},
-							{"data": 'Type'},
-							{"data": 'Poster'},
-						],
-						data: movies.Search
-					});
+      <div class="button-group pagination"></div>
+    </div>
+  </body>
+  <script>
+    const bearer = window.localStorage.getItem('bearer');
+    if (!bearer) {
+      window.location = '/';
+    }
 
-					table.page
-				}
-				)
-				.catch(err=>console.log(err))
-			}
+    const queryString = new URLSearchParams(window.location.search);
+    const page = queryString.get('page') || 1;
+    const title = queryString.get('title') || '';
+    let favMovies = [];
+    
+    const starActive = "&#9733;";
+    const starEmpty = "&#9734;";
 
-			function markFav(movieId) {
-				fetch(`/movies/favorite/${title}/${page}`, {
-					method: 'GET',
-					headers: {
-						Authorization: `Bearer ${bearer}`
-					}
-				})
-			}
+    function query(endpoint, method, body) {
+      return fetch(endpoint, {
+        method: method,
+        headers: {
+          Authorization: `Bearer ${bearer}`,
+          "Content-Type": "application/json"
+        },
+        body: JSON.stringify(body)
+      });
+    }
 
-			populateMovies()
+    function renderTable(movies) {
+      let tableContent = movies.map((movie) => {
+        return `<tr>
+          <td><button class="button" type="button" data-id="${movie.imdbID}">${favMovies.includes(movie.imdbID) ? starActive : starEmpty}</button></td>
+          <td><img alt="${movie.Title}" src="${movie.Poster}" /></td>
+          <td><h3>${movie.Title}</h3><br /><small>ID: ${movie.imdbID}</small></td>
+          <td>${movie.Year}</td>
+          <td>${movie.Type}</td>
+        </tr>`;
+      });
+      document.querySelector(
+        '.results table tbody',
+      ).innerHTML = tableContent.join('');
+    }
 
-		} );
-		</script>
-	</head>
-	<body>
+    function renderPagination(totalResults, moviesPerPage) {
+      const pages = Math.min(Math.ceil(totalResults / moviesPerPage), 100);
 
-		<table id="example">
-			<thead>
-				<th></th>
-				<th></th>
-				<th></th>
-				<th></th>
-				<th></th>
-			</thead>
-			<tbody>
-				<tr>
-					<td></td>
-					<td></td>
-					<td></td>
-					<td></td>
-					<td></td>
-				</tr>
-			</tbody>
-		</table>
-	</body>
+      let htmlString = new Array(pages)
+        .fill(0)
+        .map((zero, idx) => {
+          return `<a class="button button-xs ${
+            idx + 1 === parseInt(page) ? 'button-primary' : ''
+          }" href="?title=${title}&page=${idx + 1}">${idx + 1}</a>`;
+        })
+        .join('');
+
+      document.querySelector('.pagination').innerHTML = htmlString;
+    }
+
+    function setFavorite(movieId) {
+      return query(`/movies/favorite`, 'POST', { movieId: movieId });
+    }
+
+    function deleteFavorite(movieId) {
+      return query(`/movies/favorite`, 'DELETE', { movieId: movieId });
+    }
+
+    function fetchMovies() {
+      return query(`/movies/findTitle/${title}/${page}`, 'GET');
+    }
+
+    function fetchFavorites() {
+      return query(`/movies/favorites`, 'GET');
+    }
+    
+    function setupFavClicks() {
+      const buttonsNodeList = document.querySelectorAll('.results table button');
+      const buttons = Array.from(buttonsNodeList);
+      buttons.forEach(button => {
+        button.addEventListener('click', () => {
+          let id = button.getAttribute('data-id');
+          if (favMovies.includes(id)) {
+            favMovies.splice(favMovies.indexOf(id), 1);
+            button.innerHTML = starEmpty;
+            deleteFavorite(id);
+          } else {
+            favMovies.push(id);
+            button.innerHTML = starActive;
+            setFavorite(id);
+          }
+        });
+      });
+    }
+
+    function showNoResults() {
+      document.querySelector('.spinner').classList.add('hidden');
+      document.querySelector('.no-results').classList.remove('hidden');
+    }
+
+    function main() {
+      if (title === '') {
+        showNoResults();
+      } else {
+        document.querySelector('.input-title').setAttribute('value', title);
+        fetchFavorites()
+          .then((results) => results.json())
+          .then((ids) => {
+            favMovies = Object.keys(ids);
+            fetchMovies()
+              .then((results) => results.json())
+              .then((movies) => {
+                console.log(movies);
+                if (movies.Response === 'False') {
+                  showNoResults();
+                } else {
+                  document.querySelector('.spinner').classList.add('hidden');
+                  document.querySelector('.results').classList.remove('hidden');
+                  renderTable(movies.Search);
+                  renderPagination(movies.totalResults, 10);
+                  setupFavClicks();
+                }
+              });
+          });
+      }
+    }
+
+    document.addEventListener(
+      'DOMContentLoaded',
+      function () {
+        main();
+      },
+      false,
+    );
+  </script>
 </html>
